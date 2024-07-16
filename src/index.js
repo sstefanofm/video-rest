@@ -7,6 +7,8 @@ const multer = require('multer')
 const app = require('express')()
 const PORT = process.env.PORT || 3000
 
+const uploadFolder = path.join(__dirname, '/../media/')
+
 const ext = Object.freeze({
   AVI: '.avi',
   MP4: '.mp4'
@@ -21,7 +23,7 @@ const availableMimes = Object.freeze({
 })
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'media/')
+    cb(null, uploadFolder)
   },
   filename: (req, file, cb) => {
     const uniqSuffix = Date.now() + '-' + Math.floor(Math.random() * 1e4)
@@ -48,7 +50,8 @@ app.get('/', (req, res) => {
   if (!name)
     return res.status(400).json({ error: 'El video que intentas obtener no existe.' })
 
-  const files = fs.readdirSync(__dirname + '/../media')
+  const uploadFolder = path.join(__dirname, '/../media/')
+  const files = fs.readdirSync(uploadFolder)
   const rawFiles = files.map(file => file.slice(0, file.lastIndexOf('.')))
 
   if (!rawFiles.some(file => file === name))
@@ -61,10 +64,7 @@ app.get('/', (req, res) => {
     }
   }
 
-  res.sendFile(
-    path.join(__dirname, '/../media/', filename),
-    options
-  )
+  res.sendFile(path.join(uploadFolder, filename), options)
 })
 
 app.post('/', upload.single('video'), (req, res) => {
