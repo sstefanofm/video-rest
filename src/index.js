@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
   const filename = req.query.name
 
   if (!filename)
-    return res.status(400).send('El video que intentas obtener no existe.')
+    return res.status(400).json({ error: 'El video que intentas obtener no existe.' })
 
   const files = fs.readdirSync(__dirname + '/../media')
   const rawFiles = files.map(file => file.slice(0, file.lastIndexOf('.')))
@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
 
 app.post('/', upload.single('video'), (req, res) => {
   if (!req.file)
-    return res.status(400).send('Hubo un error al subir el video.')
+    return res.status(400).json({ error: 'Hubo un error al subir el video.' })
 
   const { filename } = req.file
 
