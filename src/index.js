@@ -9,14 +9,14 @@ const ext = Object.freeze({
   AVI: '.avi',
   MP4: '.mp4'
 })
-const availableMimes = {
+const availableMimes = Object.freeze({
   'video/mp4': ext.MP4,
   'video/x-mp4': ext.MP4,
   'video/avi': ext.AVI,
   'video/x-avi': ext.AVI,
   'video/vnd.avi': ext.AVI,
   'video/x-msvideo': ext.AVI,
-}
+})
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'media/')
@@ -50,7 +50,7 @@ app.post('/', upload.single('video'), (req, res) => {
   if (!req.file)
     return res.status(400).send('Hubo un error al subir el video.')
 
-  res.status(201).send(req.file.filename)
+  res.status(201).json({ filename: req.file.filename })
 })
 
 app.listen(PORT, () => {
