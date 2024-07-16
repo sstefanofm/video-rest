@@ -5,6 +5,18 @@ const multer = require('multer')
 const app = require('express')()
 const PORT = process.env.PORT || 3000
 
+const ext = Object.freeze({
+  AVI: '.avi',
+  MP4: '.mp4'
+})
+const availableMimes = {
+  'video/mp4': ext.MP4,
+  'video/x-mp4': ext.MP4,
+  'video/avi': ext.AVI,
+  'video/x-avi': ext.AVI,
+  'video/vnd.avi': ext.AVI,
+  'video/x-msvideo': ext.AVI,
+}
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'media/')
@@ -12,27 +24,13 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const uniqSuffix = Date.now() + '-' + Math.floor(Math.random() * 1e4)
 
-    cb(null, `${ file.fieldname }-${ uniqSuffix }.avi`)
+    cb(null, `${ uniqSuffix }${ availableMimes[file.mimetype] }`)
   },
 })
 const upload = multer({
   storage,
   /* validation for all files */
   fileFilter: (req, file, cb) => {
-    const ext = Object.freeze({
-      AVI: '.avi',
-      MP4: '.mp4'
-    })
-
-    const availableMimes = {
-      'video/mp4': ext.MP4,
-      'video/x-mp4': ext.MP4,
-      'video/avi': ext.AVI,
-      'video/x-avi': ext.AVI,
-      'video/vnd.avi': ext.AVI,
-      'video/x-msvideo': ext.AVI,
-    }
-
     const validMime = mimeType => {
       return availableMimes.hasOwnProperty(mimeType)
     }
