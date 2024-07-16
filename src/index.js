@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+const fs = require('fs')
 const multer = require('multer')
 
 const app = require('express')()
@@ -43,14 +44,30 @@ const upload = multer({
 })
 
 app.get('/', (req, res) => {
-  res.sendStatus(200)
+  const filename = req.query.name
+
+  if (!filename)
+    return res.status(400).send('El video que intentas obtener no existe.')
+
+  const files = fs.readdirSync(__dirname + '/../media')
+  const rawFiles = files.map(file => file.slice(0, file.lastIndexOf('.')))
+
+  if (!rawFiles.some(file => file === filename))
+    return res.status(400).json({ error: 'El video que intentas obtener no existe.' })
+
+  res.status(200).json({ id: 1234 })
 })
 
 app.post('/', upload.single('video'), (req, res) => {
   if (!req.file)
     return res.status(400).send('Hubo un error al subir el video.')
 
-  res.status(201).json({ filename: req.file.filename })
+  const { filename } = req.file
+
+  res.status(201).json({
+    filename: filename,
+    raw: filename.slice(0, filename.lastIndexOf('.'))
+  })
 })
 
 app.listen(PORT, () => {
