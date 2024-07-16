@@ -23,7 +23,8 @@
   "homepage": "https://github.com/sstefanofm/video-rest#readme",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
