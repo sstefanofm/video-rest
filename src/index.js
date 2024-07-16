@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const fs = require('fs')
+const path = require('path')
 const multer = require('multer')
 
 const app = require('express')()
@@ -32,9 +33,7 @@ const upload = multer({
   storage,
   /* validation for all files */
   fileFilter: (req, file, cb) => {
-    const validMime = mimeType => {
-      return availableMimes.hasOwnProperty(mimeType)
-    }
+    const validMime = mimeType => availableMimes.hasOwnProperty(mimeType)
 
     if (!validMime(file.mimetype))
       return cb(null, false)
@@ -44,18 +43,28 @@ const upload = multer({
 })
 
 app.get('/', (req, res) => {
-  const filename = req.query.name
+  const { name } = req.query
 
-  if (!filename)
+  if (!name)
     return res.status(400).json({ error: 'El video que intentas obtener no existe.' })
 
   const files = fs.readdirSync(__dirname + '/../media')
   const rawFiles = files.map(file => file.slice(0, file.lastIndexOf('.')))
 
-  if (!rawFiles.some(file => file === filename))
+  if (!rawFiles.some(file => file === name))
     return res.status(400).json({ error: 'El video que intentas obtener no existe.' })
 
-  res.status(200).json({ id: 1234 })
+  const filename = files[rawFiles.indexOf(name)]
+  const options = {
+    headers: {
+      'Content-Disposition': `attachment; filename="${ filename }"`
+    }
+  }
+
+  res.sendFile(
+    path.join(__dirname, '/../media/', filename),
+    options
+  )
 })
 
 app.post('/', upload.single('video'), (req, res) => {
