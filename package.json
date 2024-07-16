@@ -1,0 +1,30 @@
+{
+  "name": "video-rest",
+  "version": "1.0.0",
+  "description": "rest api to upload videos made in nodejs",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sstefanofm/video-rest.git"
+  },
+  "keywords": [
+    "video",
+    "rest",
+    "nodejs"
+  ],
+  "author": "stf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sstefanofm/video-rest/issues"
+  },
+  "homepage": "https://github.com/sstefanofm/video-rest#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
